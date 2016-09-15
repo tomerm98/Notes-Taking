@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -68,6 +69,15 @@ public class LocalNoteService implements NoteServiceInterface {
             text = "ERROR: FILE NOT FOUND";
         }
         return text;
+    }
+
+    @Override
+    public Date GetDateModified(String name) {
+        File[] files = context.getFilesDir().listFiles();
+        for (File f : files)
+            if (f.getName().equals(name))
+                return new Date(f.lastModified());
+        return null;
     }
 
     @Override
