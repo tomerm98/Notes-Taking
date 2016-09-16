@@ -11,7 +11,6 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
         mainNotes = new ArrayList<Note>();
         adapter = new GridViewAdapter(mainNotes);
         gv.setAdapter(adapter);
-       // lns.createNewNote("title2","text2 lol");
 
         new SyncNotesTask().execute();
 
@@ -45,24 +43,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    class SyncNotesTask extends AsyncTask<Object,Object,Note[]>
+    class SyncNotesTask extends AsyncTask<Object,Object,ArrayList<Note>>
     {
 
         @Override
-        protected Note[] doInBackground(Object[] objects) {
-          //  Note[] tempNotesArray = lns.getNoteArray();
-          //  ArrayList<Note> notes = new ArrayList<>(Arrays.asList(tempNotesArray));
-//            Collections.sort(notes);
-
-            return lns.getNoteArray();
+        protected ArrayList<Note> doInBackground(Object[] objects) {
+            ArrayList<Note> notes = lns.getNoteList();
+            Collections.sort(notes);
+            return notes ;
         }
 
         @Override
-        protected void onPostExecute(Note[] notes) {
+        protected void onPostExecute(ArrayList<Note> notes) {
             super.onPostExecute(notes);
+            mainNotes.clear();
+            for (Note n : notes)
+                mainNotes.add(n);
 
-           for (Note n : notes)
-                  mainNotes.add(n);
         }
     }
 

@@ -114,7 +114,7 @@ public class LocalNoteService implements NoteServiceInterface {
     }
 
     @Override
-    public ArrayList<String> getIdArrayList() {
+    public ArrayList<String> getIdList() {
         File[] files = context.getFilesDir().listFiles();
         ArrayList<String> ids = new ArrayList<>();
         for (File f : files)
@@ -125,9 +125,9 @@ public class LocalNoteService implements NoteServiceInterface {
     }
 
     @Override
-    public Note[] getNoteArray() {
-        ArrayList<String> ids = getIdArrayList();
-        Note[] notes = new Note[getNoteCount()];
+    public ArrayList<Note> getNoteList() {
+        ArrayList<String> ids = getIdList();
+        ArrayList<Note> notes = new ArrayList<>();
         String tempTitle, tempText, tempId;
         Date tempDate;
         for (int i = 0; i < ids.size(); i++) {
@@ -136,7 +136,7 @@ public class LocalNoteService implements NoteServiceInterface {
             tempText = getNoteText(tempId);
             tempTitle = getNoteTitle(tempId);
             if (tempDate == null) tempDate = new Date();
-            notes[i] = new Note(tempId, tempDate, tempTitle, tempText);
+            notes.add(new Note(tempId, tempDate, tempTitle, tempText));
         }
 
         return notes;

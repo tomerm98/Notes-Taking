@@ -62,6 +62,6 @@ public class Note implements Comparable<Note>{
 
     @Override
     public int compareTo(@NonNull Note other) {
-        return getDateLastModified().compareTo(((Note)other).getDateLastModified());
+        return - getDateLastModified().compareTo(((Note)other).getDateLastModified());
     }
 }

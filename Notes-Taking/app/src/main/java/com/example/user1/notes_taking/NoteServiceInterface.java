@@ -13,8 +13,8 @@ public interface NoteServiceInterface {
     public String getNoteText(String id);
     public String getNoteTitle(String id);
     public Date getDateModified(String id);
-    public ArrayList<String> getIdArrayList();
-    public Note[] getNoteArray();
+    public ArrayList<String> getIdList();
+    public ArrayList<Note> getNoteList();
     public int getNoteCount();
 
 }
