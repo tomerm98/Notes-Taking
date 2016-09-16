@@ -6,11 +6,12 @@ import java.util.Date;
  * Created by USER1 on 15/09/2016.
  */
 public interface NoteServiceInterface {
-    public void EditNote(String name, String newText);
-    public void CreateNewNote(String text);
-    public void DeleteNote(String name);
-    public String GetNoteText(String name);
-    public Date GetDateModified(String name);
-    public String[] GetNameList();
+    public void EditNote(String id , String newText,String newTitle);
+    public void CreateNewNote(String text,String title);
+    public void DeleteNote(String id);
+    public String GetNoteText(String id);
+    public String GetNoteTitle(String id);
+    public Date GetDateModified(String id);
+    public String[] GetIdList();
 
 }

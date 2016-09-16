@@ -10,17 +10,17 @@
     tools:context="com.example.user1.notes_taking.MainActivity">
 
 
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:id="@+id/gridView"
-        android:columnWidth="90dp"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
-        android:stretchMode="columnWidth"
-        android:gravity="center"
-        />
+      <GridView
+          android:layout_width="match_parent"
+          android:layout_height="400dp"
+          android:id="@+id/gridView"
+          android:columnWidth="90dp"
+          android:numColumns="auto_fit"
+          android:verticalSpacing="10dp"
+          android:horizontalSpacing="10dp"
+          android:stretchMode="columnWidth"
+          android:gravity="center"/>
+
     <Button
         android:layout_marginTop="10dp"
         android:layout_width="120dp"

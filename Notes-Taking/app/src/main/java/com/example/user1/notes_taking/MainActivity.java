@@ -1,5 +1,6 @@
 package com.example.user1.notes_taking;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,22 +19,34 @@ public class MainActivity extends AppCompatActivity {
     GridView gv;
     ArrayList<Note> notes;
     GridViewAdapter adapter;
+    LocalNoteService lns;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        lns = new LocalNoteService(this,20);
         gv = (GridView) findViewById(R.id.gridView);
         btnAdd = (Button) findViewById(R.id.btnAdd);
         notes = new ArrayList<Note>();
-       notes.add(new Note("name",new Date(),"title1","Text1"));
-      // notes.add(new Note("name",new Date(),"title2","Text2"));
-      // notes.add(new Note("name",new Date(),"title3","Text3"));
-      // notes.add(new Note("name",new Date(),"title4","Text4"));
         adapter = new GridViewAdapter(notes);
         gv.setAdapter(adapter);
 
 
+
     }
+    class InitializeNotesTask extends AsyncTask
+    {
+
+        @Override
+        protected ArrayList<Note> doInBackground(Object[] objects) {
+            String[] names = lns.GetNameList();
+            Date tempDate;
+
+            return null;
+        }
+    }
+
 
 
     class GridViewAdapter extends BaseAdapter {
@@ -60,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            view = getLayoutInflater().inflate(R.layout.gridview_item, viewGroup);
+            view = getLayoutInflater().inflate(R.layout.gridview_item, viewGroup, false);
             TextView tvText = (TextView) view.findViewById(R.id.tvText);
             TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
             Note tempNote = notes.get(i);
@@ -70,31 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
             return view;
 
-            //***This is an alternative better version. but first, the bug must be EXTERMINATED
-            //ViewHolder vh;
-            //if (view == null)
-            //{
-            //    vh = new ViewHolder();
-            //    view = getLayoutInflater().inflate(R.layout.gridview_item,viewGroup);
-            //    vh.tvText = (TextView) view.findViewById(R.id.tvText);
-            //    vh.tvText = (TextView) view.findViewById(R.id.tvText);
-            //    view.setTag(vh);
-            //}
-            //else vh = (ViewHolder) view.getTag();
-//
-            //Note tempNote = notes.get(i);
-            //if (tempNote != null) {
-            //    vh.tvText.setText(tempNote.getText());
-            //    vh.tvTitle.setText(tempNote.getTitle());
-            //}
-//
-            //return view;
         }
-        // static class ViewHolder
-        // {
-        //     TextView tvTitle,tvText;
-        // }
+
     }
-
-
 }

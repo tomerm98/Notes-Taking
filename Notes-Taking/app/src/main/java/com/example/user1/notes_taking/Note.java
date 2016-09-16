@@ -6,20 +6,20 @@ import java.util.Date;
  * Created by USER1 on 15/09/2016.
  */
 public class Note implements Comparable{
-    private String name;
+    private String id;
     private String title;
     private Date dateLastModified;
     private String text;
 
-    public Note(String name) {
-        this.name = name;
+    public Note(String id) {
+        this.id = id;
         this.dateLastModified = new Date();
         this.title = "New Note";
         this.text = "";
     }
 
-    public Note(String name, Date dateLastModified, String title,String text) {
-        this.name = name;
+    public Note(String id, Date dateLastModified, String title,String text) {
+        this.id = id;
         this.title = title;
         this.dateLastModified = dateLastModified;
         this.text = text;
@@ -33,12 +33,12 @@ public class Note implements Comparable{
         this.text = text;
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
