@@ -1,11 +1,13 @@
 package com.example.user1.notes_taking;
 
+import android.support.annotation.NonNull;
+
 import java.util.Date;
 
 /**
  * Created by USER1 on 15/09/2016.
  */
-public class Note implements Comparable{
+public class Note implements Comparable<Note>{
     private String id;
     private String title;
     private Date dateLastModified;
@@ -57,8 +59,9 @@ public class Note implements Comparable{
         this.dateLastModified = dateLastModified;
     }
 
+
     @Override
-    public int compareTo(Object o) {
-        return getDateLastModified().compareTo(((Note)o).getDateLastModified());
+    public int compareTo(@NonNull Note other) {
+        return getDateLastModified().compareTo(((Note)other).getDateLastModified());
     }
 }

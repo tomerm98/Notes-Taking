@@ -19,16 +19,16 @@ import java.util.Random;
 public class LocalNoteService implements NoteServiceInterface {
 
     private Context context;
-    private int idLength;
+    final int idLength = 25; // must be greater than 5
 
-    public LocalNoteService(Context context,int idLength) {
+    public LocalNoteService(Context context) {
         this.context = context;
-        this.idLength = idLength;
+
     }
 
 
     @Override
-    public void EditNote(String id, String newText, String newTitle) {
+    public void editNote(String id, String newTitle, String newText) {
         try {
             String fileName = id + ".txt";
             FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
@@ -43,8 +43,8 @@ public class LocalNoteService implements NoteServiceInterface {
     }
 
     @Override
-    public void CreateNewNote(String text, String title) {
-        String fileName = GenerateRandomId(getIdLength()) + ".txt";
+    public void createNewNote(String title, String text) {
+        String fileName = generateRandomId(idLength) + ".txt";
 
         try {
             FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
@@ -59,13 +59,13 @@ public class LocalNoteService implements NoteServiceInterface {
     }
 
     @Override
-    public void DeleteNote(String id) {
+    public void deleteNote(String id) {
         String fileName = id + ".txt";
         context.deleteFile(fileName);
     }
 
     @Override
-    public String GetNoteText(String id) {
+    public String getNoteText(String id) {
         String fileName = id + ".txt";
         String text = "";
         try {
@@ -86,7 +86,7 @@ public class LocalNoteService implements NoteServiceInterface {
     }
 
     @Override
-    public String GetNoteTitle(String id) {
+    public String getNoteTitle(String id) {
         String fileName = id + ".txt";
         String title;
         try {
@@ -104,31 +104,59 @@ public class LocalNoteService implements NoteServiceInterface {
     }
 
     @Override
-    public Date GetDateModified(String id) {
+    public Date getDateModified(String id) {
         String fileName = id + ".txt";
         File[] files = context.getFilesDir().listFiles();
         for (File f : files)
             if (f.getName().equals(fileName))
                 return new Date(f.lastModified());
-        return null;
+        return new Date();
     }
 
     @Override
-    public String[] GetIdList() {
+    public ArrayList<String> getIdArrayList() {
         File[] files = context.getFilesDir().listFiles();
-        String[] ids = new String[files.length];
-        for (int i = 0; i < files.length; i++)
-            ids[i] = files[i].getName().replace(".txt","");
+        ArrayList<String> ids = new ArrayList<>();
+        for (File f : files)
+            if (f.getName().contains("NOTE"))
+            ids.add(f.getName().replace(".txt", ""));
         return ids;
 
     }
 
-    private String GenerateRandomId(int length) {
+    @Override
+    public Note[] getNoteArray() {
+        ArrayList<String> ids = getIdArrayList();
+        Note[] notes = new Note[getNoteCount()];
+        String tempTitle, tempText, tempId;
+        Date tempDate;
+        for (int i = 0; i < ids.size(); i++) {
+            tempId = ids.get(i);
+            tempDate = getDateModified(tempId);
+            tempText = getNoteText(tempId);
+            tempTitle = getNoteTitle(tempId);
+            if (tempDate == null) tempDate = new Date();
+            notes[i] = new Note(tempId, tempDate, tempTitle, tempText);
+        }
 
+        return notes;
+    }
+
+    @Override
+    public int getNoteCount() {
+        int count = 0;
+        for (File f : context.getFilesDir().listFiles())
+            if (f.getName().contains("NOTE"))
+                count++;
+        return count;
+    }
+
+    private String generateRandomId(int length) {
+        if (length <5) return null;
         char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray();
-        String id = "";
+        String id = "NOTE_";
         Random rng = new Random();
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < length-5; i++) {
             char c = chars[rng.nextInt(chars.length)];
             id += c;
         }
@@ -144,11 +172,5 @@ public class LocalNoteService implements NoteServiceInterface {
         this.context = context;
     }
 
-    public int getIdLength() {
-        return idLength;
-    }
 
-    public void setIdLength(int idLength) {
-        this.idLength = idLength;
-    }
 }

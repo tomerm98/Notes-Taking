@@ -5,19 +5,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
     Button btnAdd;
     GridView gv;
-    ArrayList<Note> notes;
+    ArrayList<Note> mainNotes;
     GridViewAdapter adapter;
     LocalNoteService lns;
 
@@ -25,25 +25,44 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        lns = new LocalNoteService(this,20);
+
+        lns = new LocalNoteService(this);
+
         gv = (GridView) findViewById(R.id.gridView);
         btnAdd = (Button) findViewById(R.id.btnAdd);
-        notes = new ArrayList<Note>();
-        adapter = new GridViewAdapter(notes);
+        mainNotes = new ArrayList<Note>();
+        adapter = new GridViewAdapter(mainNotes);
         gv.setAdapter(adapter);
+       // lns.createNewNote("title2","text2 lol");
+
+        new SyncNotesTask().execute();
 
 
 
     }
-    class InitializeNotesTask extends AsyncTask
+
+    public void addNote(View view) {
+
+    }
+
+    class SyncNotesTask extends AsyncTask<Object,Object,Note[]>
     {
 
         @Override
-        protected ArrayList<Note> doInBackground(Object[] objects) {
-            String[] names = lns.GetNameList();
-            Date tempDate;
+        protected Note[] doInBackground(Object[] objects) {
+          //  Note[] tempNotesArray = lns.getNoteArray();
+          //  ArrayList<Note> notes = new ArrayList<>(Arrays.asList(tempNotesArray));
+//            Collections.sort(notes);
 
-            return null;
+            return lns.getNoteArray();
+        }
+
+        @Override
+        protected void onPostExecute(Note[] notes) {
+            super.onPostExecute(notes);
+
+           for (Note n : notes)
+                  mainNotes.add(n);
         }
     }
 
