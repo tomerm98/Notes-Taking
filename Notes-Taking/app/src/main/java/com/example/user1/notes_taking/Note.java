@@ -5,21 +5,32 @@ import java.util.Date;
 /**
  * Created by USER1 on 15/09/2016.
  */
-public class Note {
+public class Note implements Comparable{
     private String name;
-    private String Title;
+    private String title;
     private Date dateLastModified;
+    private String text;
 
-    public Note(String name, Date dateLastModified) {
+    public Note(String name) {
         this.name = name;
-        this.dateLastModified = dateLastModified;
-        this.Title = "New Note";
+        this.dateLastModified = new Date();
+        this.title = "New Note";
+        this.text = "";
     }
 
-    public Note(String name, String title, Date dateLastModified) {
+    public Note(String name, Date dateLastModified, String title,String text) {
         this.name = name;
-        Title = title;
+        this.title = title;
         this.dateLastModified = dateLastModified;
+        this.text = text;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public String getName() {
@@ -31,11 +42,11 @@ public class Note {
     }
 
     public String getTitle() {
-        return Title;
+        return title;
     }
 
     public void setTitle(String title) {
-        Title = title;
+        this.title = title;
     }
 
     public Date getDateLastModified() {
@@ -44,5 +55,10 @@ public class Note {
 
     public void setDateLastModified(Date dateLastModified) {
         this.dateLastModified = dateLastModified;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return getDateLastModified().compareTo(((Note)o).getDateLastModified());
     }
 }

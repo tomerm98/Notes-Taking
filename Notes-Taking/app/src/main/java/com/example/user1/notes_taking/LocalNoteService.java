@@ -37,7 +37,7 @@ public class LocalNoteService implements NoteServiceInterface {
 
     @Override
     public void CreateNewNote(String text) {
-        String name = GenerateRandomId() + ".txt";
+        String name = GenerateRandomId(20) + ".txt";
         try {
             FileOutputStream fos = context.openFileOutput(name, Context.MODE_PRIVATE);
             fos.write(text.getBytes());
@@ -90,11 +90,12 @@ public class LocalNoteService implements NoteServiceInterface {
 
     }
 
-    private String GenerateRandomId() {
-        char[] chars = "abcdefghijklmnopqrstuvwxyz1234567890".toCharArray();
+    private String GenerateRandomId(int length) {
+
+        char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray();
         String id = "";
         Random rng = new Random();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < length; i++) {
             char c = chars[rng.nextInt(chars.length)];
             id += c;
         }
