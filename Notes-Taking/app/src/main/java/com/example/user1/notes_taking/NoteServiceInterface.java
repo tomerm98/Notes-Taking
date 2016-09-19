@@ -6,7 +6,8 @@ import java.util.Date;
 /**
  * Created by USER1 on 15/09/2016.
  */
-public interface NoteServiceInterface {
+public interface
+NoteServiceInterface {
     public void editNote(String id , String newTitle, String newText);
     public void createNewNote(String title,String text);
     public void deleteNote(String id);

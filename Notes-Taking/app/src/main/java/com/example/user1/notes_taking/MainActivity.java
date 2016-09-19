@@ -1,5 +1,6 @@
 package com.example.user1.notes_taking;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Note> mainNotes;
     GridViewAdapter adapter;
     LocalNoteService lns;
+    Intent noteActivityIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addNote(View view) {
-
+        noteActivityIntent = new Intent(this,NoteActivity.class);
+        startActivity(noteActivityIntent);
     }
 
     class SyncNotesTask extends AsyncTask<Object,Object,ArrayList<Note>>
@@ -92,11 +95,18 @@ public class MainActivity extends AppCompatActivity {
             view = getLayoutInflater().inflate(R.layout.gridview_item, viewGroup, false);
             TextView tvText = (TextView) view.findViewById(R.id.tvText);
             TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-            Note tempNote = notes.get(i);
+            final Note tempNote = notes.get(i);
 
             tvText.setText(tempNote.getText());
             tvTitle.setText(tempNote.getTitle());
-
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    noteActivityIntent = new Intent(MainActivity.this,NoteActivity.class);
+                    noteActivityIntent.putExtra("id",tempNote.getId());
+                    startActivity(noteActivityIntent);
+                }
+            });
             return view;
 
         }
