@@ -16,11 +16,36 @@ public class NoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
         intent = getIntent();
+
         etTitle = (EditText) findViewById(R.id.etTitle);
         etText = (EditText) findViewById(R.id.etText);
 
 
     }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveNote();
+    }
+
+    private void saveNote()
+    {
+        if (intent.getExtras().get("id") != null)
+        {
+            new EditNote().execute(intent.getExtras().get("id").toString(),
+                    etTitle.getText().toString(),
+                    etText.getText().toString());
+        }
+        else
+        {
+            new CreateNewNote().execute(etTitle.getText().toString(),
+                    etText.getText().toString());
+        }
+    }
+
+
     class CreateNewNote extends AsyncTask<String,Object,Object>
     {
 
