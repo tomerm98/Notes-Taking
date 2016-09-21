@@ -29,8 +29,12 @@ public class Note implements Comparable<Note>,Serializable{
         id = generateRandomId(idLength);
     }
 
-
-
+    public Note(String title, String text, Date dateLastModified, String id) {
+        this.title = title;
+        this.text = text;
+        this.dateLastModified = dateLastModified;
+        this.id = id;
+    }
 
     public String getText() {
         return text;

@@ -73,7 +73,7 @@ public class LocalNoteService implements NoteServiceInterface {
             e.printStackTrace();
             text = "ERROR: FILE NOT FOUND";
         }
-        return new Note(title,text,date);
+        return new Note(title,text,date,id);
     }
 
 

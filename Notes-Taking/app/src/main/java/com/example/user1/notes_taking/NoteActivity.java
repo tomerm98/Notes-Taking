@@ -43,9 +43,12 @@ public class NoteActivity extends AppCompatActivity {
 
        if (!(etTitle.getText().toString().equals("") && etText.getText().toString().equals("")))
        {
-           note.setText(etText.getText().toString());
-           note.setTitle(etTitle.getText().toString());
-           new SaveTask().execute(note);
+           if (note != null) {
+               note.setText(etText.getText().toString());
+               note.setTitle(etTitle.getText().toString());
+           }
+           else note = new Note(etTitle.getText().toString(),etText.getText().toString());
+           lns.saveNote(note);;
        }
     }
 

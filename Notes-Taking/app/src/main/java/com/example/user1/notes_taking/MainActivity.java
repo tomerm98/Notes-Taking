@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+        Toast.makeText(this,"restart",Toast.LENGTH_LONG).show();
         new SyncNotesTask().execute();
     }
 
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         lns = new LocalNoteService(this);
         rl = (RelativeLayout) findViewById(R.id.rl);
-        sbDeleteNote = Snackbar.make(rl,"Delete Note?",Snackbar.LENGTH_INDEFINITE);
+        sbDeleteNote = Snackbar.make(rl,"Delete Note?",Snackbar.LENGTH_LONG);
 
 
         gv = (GridView) findViewById(R.id.gridView);
@@ -67,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
     class GridViewAdapter extends BaseAdapter {
         ArrayList<Note> notes;
-
+        public void setNotes(ArrayList<Note> notes) {this.notes = notes;}
+        public ArrayList<Note> getNotes(){return this.notes;}
         public GridViewAdapter(ArrayList<Note> notes) {
             this.notes = notes;
         }
@@ -149,9 +151,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Note> notes) {
             super.onPostExecute(notes);
-            mainNotes.clear();
-            for (Note n : notes)
-                mainNotes.add(n);
+            adapter.setNotes(notes);
             adapter.notifyDataSetChanged();;
             gv.setAdapter(adapter);
         }
