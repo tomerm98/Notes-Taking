@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     GridViewAdapter adapter;
     LocalNoteService lns;
     Intent noteActivityIntent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +107,13 @@ public class MainActivity extends AppCompatActivity {
                     noteActivityIntent = new Intent(MainActivity.this,NoteActivity.class);
                     noteActivityIntent.putExtra("id",tempNote.getId());
                     startActivity(noteActivityIntent);
+                }
+            });
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    return false;
                 }
             });
             return view;
