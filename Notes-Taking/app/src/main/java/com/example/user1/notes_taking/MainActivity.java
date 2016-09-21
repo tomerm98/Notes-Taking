@@ -2,6 +2,7 @@ package com.example.user1.notes_taking;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 
 
 import java.util.ArrayList;
@@ -22,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     GridViewAdapter adapter;
     LocalNoteService lns;
     Intent noteActivityIntent;
+    RelativeLayout rl;
+    Snackbar sbDeleteNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         lns = new LocalNoteService(this);
+        rl = (RelativeLayout) findViewById(R.id.rl);
+        sbDeleteNote = Snackbar.make(rl,"Delete Note?",Snackbar.LENGTH_INDEFINITE);
+
 
         gv = (GridView) findViewById(R.id.gridView);
         btnAdd = (Button) findViewById(R.id.btnAdd);
@@ -111,8 +119,17 @@ public class MainActivity extends AppCompatActivity {
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-
-                    return false;
+                    sbDeleteNote.setAction("Yes", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            new DeleteNote().execute(tempNote.getId());
+                            new SyncNotesTask().execute();
+                            adapter.notifyDataSetChanged();;
+                            gv.setAdapter(adapter);
+                        }
+                    });
+                    sbDeleteNote.show();
+                    return true;
                 }
             });
             return view;
@@ -124,9 +141,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected Integer doInBackground(String... params) {
 
-                String title =params[0];
-                String text =params[1];
-                lns.createNewNote(title,text);
+                String id =params[0];
+                lns.deleteNote(id);
                 return null;
             }
         }
