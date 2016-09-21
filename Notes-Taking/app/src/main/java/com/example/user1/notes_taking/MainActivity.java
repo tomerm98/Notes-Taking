@@ -29,6 +29,12 @@ public class MainActivity extends AppCompatActivity {
     Snackbar sbDeleteNote;
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        new SyncNotesTask().execute();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -50,30 +56,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //the add note button onclick event method
     public void addNote(View view) {
         noteActivityIntent = new Intent(this,NoteActivity.class);
         startActivity(noteActivityIntent);
     }
 
-    class SyncNotesTask extends AsyncTask<Object,Object,ArrayList<Note>>
-    {
-
-        @Override
-        protected ArrayList<Note> doInBackground(Object[] objects) {
-            ArrayList<Note> notes = lns.getNoteList();
-            Collections.sort(notes);
-            return notes ;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Note> notes) {
-            super.onPostExecute(notes);
-            mainNotes.clear();
-            for (Note n : notes)
-                mainNotes.add(n);
-
-        }
-    }
 
 
 
@@ -101,31 +89,33 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
+            //creates a view from the gridview_item layout and puts the note data inside
             view = getLayoutInflater().inflate(R.layout.gridview_item, viewGroup, false);
             TextView tvText = (TextView) view.findViewById(R.id.tvText);
             TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
             final Note tempNote = notes.get(i);
-
             tvText.setText(tempNote.getText());
             tvTitle.setText(tempNote.getTitle());
+
+            //go to NoteActivity when clicking a note
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     noteActivityIntent = new Intent(MainActivity.this,NoteActivity.class);
-                    noteActivityIntent.putExtra("id",tempNote.getId());
+                    noteActivityIntent.putExtra(getString(R.string.EXTRA_NOTE_ID),tempNote);
                     startActivity(noteActivityIntent);
                 }
             });
+
+            //start a delete-note snackbar when long-pressing a note
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     sbDeleteNote.setAction("Yes", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            new DeleteNote().execute(tempNote.getId());
+                            new DeleteNoteTask().execute(tempNote.getId());
                             new SyncNotesTask().execute();
-                            adapter.notifyDataSetChanged();;
-                            gv.setAdapter(adapter);
                         }
                     });
                     sbDeleteNote.show();
@@ -135,17 +125,54 @@ public class MainActivity extends AppCompatActivity {
             return view;
 
         }
-        class DeleteNote extends AsyncTask<String,Object,Object>
-        {
 
-            @Override
-            protected Integer doInBackground(String... params) {
 
-                String id =params[0];
-                lns.deleteNote(id);
-                return null;
-            }
+
+
+
+
+    }
+
+
+
+    //syncs the gridview with the local storage notes **no params**
+    class SyncNotesTask extends AsyncTask<Object,Object,ArrayList<Note>>
+    {
+
+        @Override
+        protected ArrayList<Note> doInBackground(Object[] objects) {
+            ArrayList<Note> notes = lns.getNoteList();
+            Collections.sort(notes);
+            return notes ;
         }
 
+        @Override
+        protected void onPostExecute(ArrayList<Note> notes) {
+            super.onPostExecute(notes);
+            mainNotes.clear();
+            for (Note n : notes)
+                mainNotes.add(n);
+            adapter.notifyDataSetChanged();;
+            gv.setAdapter(adapter);
+        }
+    }
+
+    //deletes a note from local storage. **String id**
+    class DeleteNoteTask extends AsyncTask<String,Object,Object>
+    {
+
+        @Override
+        protected Integer doInBackground(String... params) {
+
+            String id =params[0];
+            lns.deleteNote(id);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+            new SyncNotesTask().execute();
+        }
     }
 }

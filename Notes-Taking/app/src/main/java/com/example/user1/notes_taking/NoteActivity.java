@@ -9,7 +9,7 @@ import android.widget.EditText;
 
 public class NoteActivity extends AppCompatActivity {
     Intent intent;
-    boolean newNote;
+    Note note;
     EditText etTitle, etText;
     LocalNoteService lns = new LocalNoteService(this);
 
@@ -19,9 +19,14 @@ public class NoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
         intent = getIntent();
-
+        note = (Note) intent.getSerializableExtra(getString(R.string.EXTRA_NOTE_ID));
         etTitle = (EditText) findViewById(R.id.etTitle);
         etText = (EditText) findViewById(R.id.etText);
+        if (note != null)
+        {
+            etTitle.setText(note.getTitle());
+            etText.setText(note.getText());
+        }
 
 
     }
@@ -35,44 +40,27 @@ public class NoteActivity extends AppCompatActivity {
 
     private void saveNote()
     {
-        if (intent.getExtras().get("id") != null)
-        {
-            new EditNote().execute(intent.getExtras().get("id").toString(),
-                    etTitle.getText().toString(),
-                    etText.getText().toString());
-        }
-        else
-        {
-            new CreateNewNote().execute(etTitle.getText().toString(),
-                    etText.getText().toString());
-        }
+
+       if (!(etTitle.getText().toString().equals("") && etText.getText().toString().equals("")))
+       {
+           note.setText(etText.getText().toString());
+           note.setTitle(etTitle.getText().toString());
+           new SaveTask().execute(note);
+       }
     }
 
 
-    class CreateNewNote extends AsyncTask<String,Object,Object>
+    class SaveTask extends AsyncTask<Note ,Object,Object>
     {
 
         @Override
-        protected Integer doInBackground(String... params) {
-
-            String title =params[0];
-            String text =params[1];
-            lns.createNewNote(title,text);
+        protected Object doInBackground(Note... notes) {
+            for (Note n : notes)
+                lns.saveNote(n);
             return null;
         }
     }
-    class EditNote extends AsyncTask<String,Object,Object>
-    {
 
-        @Override
-        protected Integer doInBackground(String... params) {
-            String id =params[0];
-            String title = (String)params[1];
-            String text = (String)params[2];
-            lns.editNote(id,title,text);
-            return null;
-        }
-    }
 
 
     

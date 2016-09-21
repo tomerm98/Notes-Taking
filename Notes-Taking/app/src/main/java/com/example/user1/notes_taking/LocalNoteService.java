@@ -28,13 +28,13 @@ public class LocalNoteService implements NoteServiceInterface {
 
 
     @Override
-    public void editNote(String id, String newTitle, String newText) {
+    public void saveNote(Note n) {
         try {
-            String fileName = id + ".txt";
+            String fileName = n.getId() + ".txt";
             FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             PrintWriter pw = new PrintWriter(fos);
-            pw.println(newTitle);
-            pw.print(newText);
+            pw.println(n.getTitle());
+            pw.print(n.getText());
             pw.flush();
             pw.close();
         } catch (IOException e) {
@@ -42,21 +42,7 @@ public class LocalNoteService implements NoteServiceInterface {
         }
     }
 
-    @Override
-    public void createNewNote(String title, String text) {
-        String fileName = generateRandomId(idLength) + ".txt";
 
-        try {
-            FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-            PrintWriter pw = new PrintWriter(fos);
-            pw.println(title);
-            pw.print(text);
-            pw.flush();
-            pw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void deleteNote(String id) {
@@ -65,14 +51,19 @@ public class LocalNoteService implements NoteServiceInterface {
     }
 
     @Override
-    public String getNoteText(String id) {
+    public Note getNote(String id) {
         String fileName = id + ".txt";
         String text = "";
+        String title = "";
+        Date date = new Date();
         try {
+            File f = new File(fileName);
+            Date lastModified = new Date(f.lastModified());
+
             FileInputStream in = context.openFileInput(fileName);
             InputStreamReader inputStreamReader = new InputStreamReader(in);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            bufferedReader.readLine(); // get rid of title
+            title = bufferedReader.readLine();
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 text += line;
@@ -82,36 +73,10 @@ public class LocalNoteService implements NoteServiceInterface {
             e.printStackTrace();
             text = "ERROR: FILE NOT FOUND";
         }
-        return text;
+        return new Note(title,text,date);
     }
 
-    @Override
-    public String getNoteTitle(String id) {
-        String fileName = id + ".txt";
-        String title;
-        try {
-            FileInputStream in = context.openFileInput(fileName);
-            InputStreamReader inputStreamReader = new InputStreamReader(in);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            title = bufferedReader.readLine();
 
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            title = "ERROR: FILE NOT FOUND";
-        }
-        return title;
-    }
-
-    @Override
-    public Date getDateModified(String id) {
-        String fileName = id + ".txt";
-        File[] files = context.getFilesDir().listFiles();
-        for (File f : files)
-            if (f.getName().equals(fileName))
-                return new Date(f.lastModified());
-        return new Date();
-    }
 
     @Override
     public ArrayList<String> getIdList() {
@@ -128,40 +93,16 @@ public class LocalNoteService implements NoteServiceInterface {
     public ArrayList<Note> getNoteList() {
         ArrayList<String> ids = getIdList();
         ArrayList<Note> notes = new ArrayList<>();
-        String tempTitle, tempText, tempId;
-        Date tempDate;
+        String  tempId;
         for (int i = 0; i < ids.size(); i++) {
             tempId = ids.get(i);
-            tempDate = getDateModified(tempId);
-            tempText = getNoteText(tempId);
-            tempTitle = getNoteTitle(tempId);
-            if (tempDate == null) tempDate = new Date();
-            notes.add(new Note(tempId, tempDate, tempTitle, tempText));
+           notes.add(getNote(tempId));
         }
 
         return notes;
     }
 
-    @Override
-    public int getNoteCount() {
-        int count = 0;
-        for (File f : context.getFilesDir().listFiles())
-            if (f.getName().contains("NOTE"))
-                count++;
-        return count;
-    }
 
-    private String generateRandomId(int length) {
-        if (length <5) return null;
-        char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray();
-        String id = "NOTE_";
-        Random rng = new Random();
-        for (int i = 0; i < length-5; i++) {
-            char c = chars[rng.nextInt(chars.length)];
-            id += c;
-        }
-        return id;
-    }
 
 
     public Context getContext() {

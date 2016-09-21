@@ -8,14 +8,10 @@ import java.util.Date;
  */
 public interface
 NoteServiceInterface {
-    public void editNote(String id , String newTitle, String newText);
-    public void createNewNote(String title,String text);
-    public void deleteNote(String id);
-    public String getNoteText(String id);
-    public String getNoteTitle(String id);
-    public Date getDateModified(String id);
-    public ArrayList<String> getIdList();
-    public ArrayList<Note> getNoteList();
-    public int getNoteCount();
+    void saveNote(Note n);
+    void deleteNote(String id);
+    Note getNote(String id);
+    ArrayList<String> getIdList();
+    ArrayList<Note> getNoteList();
 
 }
