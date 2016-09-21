@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
     LocalNoteService lns;
     Intent noteActivityIntent;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +117,18 @@ public class MainActivity extends AppCompatActivity {
             });
             return view;
 
+        }
+        class DeleteNote extends AsyncTask<String,Object,Object>
+        {
+
+            @Override
+            protected Integer doInBackground(String... params) {
+
+                String title =params[0];
+                String text =params[1];
+                lns.createNewNote(title,text);
+                return null;
+            }
         }
 
     }

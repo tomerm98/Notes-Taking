@@ -6,11 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.EditText;
 
+
 public class NoteActivity extends AppCompatActivity {
     Intent intent;
     boolean newNote;
     EditText etTitle, etText;
     LocalNoteService lns = new LocalNoteService(this);
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +73,7 @@ public class NoteActivity extends AppCompatActivity {
             return null;
         }
     }
+
 
     
 
