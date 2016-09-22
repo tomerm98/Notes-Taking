@@ -27,16 +27,16 @@ public class NoteActivity extends AppCompatActivity {
             etTitle.setText(note.getTitle());
             etText.setText(note.getText());
         }
-
-
     }
-
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    public void onBackPressed() {
+        super.onBackPressed();
         saveNote();
+        finish();
     }
+
+
 
     private void saveNote()
     {
@@ -48,21 +48,11 @@ public class NoteActivity extends AppCompatActivity {
                note.setTitle(etTitle.getText().toString());
            }
            else note = new Note(etTitle.getText().toString(),etText.getText().toString());
-           lns.saveNote(note);;
+           lns.saveNote(note);
        }
     }
 
 
-    class SaveTask extends AsyncTask<Note ,Object,Object>
-    {
-
-        @Override
-        protected Object doInBackground(Note... notes) {
-            for (Note n : notes)
-                lns.saveNote(n);
-            return null;
-        }
-    }
 
 
 

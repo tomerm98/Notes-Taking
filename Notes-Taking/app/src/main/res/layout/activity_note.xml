@@ -17,8 +17,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
+   
             android:hint="Title"
             android:textStyle="bold"
             android:textSize="30sp"
@@ -30,8 +29,8 @@
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
+
+
             android:hint="Text"
             android:background="@android:color/transparent"
             android:textSize="20sp"

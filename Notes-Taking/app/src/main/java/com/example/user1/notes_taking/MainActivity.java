@@ -31,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        Toast.makeText(this,"restart",Toast.LENGTH_LONG).show();
+        //Toast.makeText(this,"restart",Toast.LENGTH_LONG).show();
+
         new SyncNotesTask().execute();
     }
 
@@ -39,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         lns = new LocalNoteService(this);
         rl = (RelativeLayout) findViewById(R.id.rl);
         sbDeleteNote = Snackbar.make(rl,"Delete Note?",Snackbar.LENGTH_LONG);
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<Note> notes) {
             super.onPostExecute(notes);
             adapter.setNotes(notes);
-            adapter.notifyDataSetChanged();;
+            adapter.notifyDataSetChanged();
             gv.setAdapter(adapter);
         }
     }
