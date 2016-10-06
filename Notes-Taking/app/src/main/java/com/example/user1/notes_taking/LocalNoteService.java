@@ -19,7 +19,7 @@ import java.util.Random;
 public class LocalNoteService implements NoteServiceInterface {
 
     private Context context;
-    final int idLength = 25; // must be greater than 5
+
 
     public LocalNoteService(Context context) {
         this.context = context;
@@ -68,6 +68,8 @@ public class LocalNoteService implements NoteServiceInterface {
             while ((line = bufferedReader.readLine()) != null) {
                 text += line;
             }
+
+
 
         } catch (IOException e) {
             e.printStackTrace();
