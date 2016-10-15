@@ -55,10 +55,10 @@ public class LocalNoteService implements NoteServiceInterface {
         String fileName = id + ".txt";
         String text = "";
         String title = "";
-        Date date = new Date();
+        Date lastModified = new Date();
         try {
             File f = new File(fileName);
-            Date lastModified = new Date(f.lastModified());
+            lastModified = new Date(f.lastModified());
 
             FileInputStream in = context.openFileInput(fileName);
             InputStreamReader inputStreamReader = new InputStreamReader(in);
@@ -68,14 +68,11 @@ public class LocalNoteService implements NoteServiceInterface {
             while ((line = bufferedReader.readLine()) != null) {
                 text += line;
             }
-
-
-
         } catch (IOException e) {
             e.printStackTrace();
             text = "ERROR: FILE NOT FOUND";
         }
-        return new Note(title,text,date,id);
+        return new Note(title,text,lastModified,id);
     }
 
 

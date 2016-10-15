@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -27,8 +28,15 @@ import java.util.Random;
 public class CloudNoteService implements NoteServiceInterface{
     private final String ID_FILE_NAME = "id.txt";
     private final String TABLE_ID = "Notes";
+    private final String COLUMN_NOTE_ID = "Note Id";
+    private final String COLUMN_TEXT = "Text";
+    private final String COLUMN_TITLE = "Title";
+    private final String COLUMN_USER_ID = "UserId";
+    private final String COLUMN_LAST_MODIFIED = "Last Modified Date";
     private final int ID_LENGTH = 50;
-    private ParseObject po;
+    private final String APPLICATION_ID ="hOWu3YDCSWNu8TIKGfAX3ApSuI1i05Sy7IP7KPnY";
+    private final String CLIENT_KEY ="BVgfoPAgU7wMU2vPqmv0p8ToRsesxuGqhdB0OvRe";
+    private final String SERVER_ADDRESS ="https://parseapi.back4app.com/";
     private String userId;
     private Context context;
 
@@ -50,9 +58,9 @@ public class CloudNoteService implements NoteServiceInterface{
         }
 
         Parse.initialize(new Parse.Configuration.Builder(this.context)
-                .applicationId("hOWu3YDCSWNu8TIKGfAX3ApSuI1i05Sy7IP7KPnY")
-                .clientKey("BVgfoPAgU7wMU2vPqmv0p8ToRsesxuGqhdB0OvRe")
-                .server("https://parseapi.back4app.com/").build()
+                .applicationId(APPLICATION_ID)
+                .clientKey(CLIENT_KEY)
+                .server(SERVER_ADDRESS).build()
         );
 
 
@@ -89,16 +97,27 @@ public class CloudNoteService implements NoteServiceInterface{
     }
 
     @Override
-    public void saveNote(Note n) {
+    public void saveNote(final Note n) {
+
         ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_ID);
-        query.whereEqualTo("", "Dan Stemkoski");
+        query.whereEqualTo(COLUMN_NOTE_ID, n.getId());
         query.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> scoreList, ParseException e) {
-                if (e == null) {
-                   //Log.d("score", "Retrieved " + scoreList.size() + " scores");
-                } else {
-                //    Log.d("score", "Error: " + e.getMessage());
+            public void done(List<ParseObject> objects, ParseException e) {
+                ParseObject parse;
+                if (e == null) { //note exists - editing
+                    parse = objects.get(0);
+                    parse.put(COLUMN_TITLE, n.getTitle());
+                    parse.put(COLUMN_TEXT, n.getText());
+                    parse.put(COLUMN_LAST_MODIFIED, new Date());
+                } else { // note doesn't exist - creating new one
+                    parse = new ParseObject(TABLE_ID);
+                    parse.put(COLUMN_USER_ID, userId);
+                    parse.put(COLUMN_NOTE_ID, n.getId());
+                    parse.put(COLUMN_TITLE, n.getTitle());
+                    parse.put(COLUMN_TEXT, n.getText());
+                    parse.put(COLUMN_LAST_MODIFIED, new Date());
                 }
+                parse.saveInBackground();
             }
         });
 
@@ -107,21 +126,68 @@ public class CloudNoteService implements NoteServiceInterface{
 
     @Override
     public void deleteNote(String id) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_ID);
+        query.whereEqualTo(COLUMN_NOTE_ID, id);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                 if (e == null)
+                     objects.get(0).deleteInBackground();
 
+            }
+        });
     }
 
     @Override
     public Note getNote(String id) {
-        return null;
+        final Note n = new Note("Error","Error",new Date(),"Error"); // these values will stay if note not found
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_ID);
+        query.whereEqualTo(COLUMN_NOTE_ID, id);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e==null)
+                {
+                    ParseObject parse = objects.get(0);
+                    n.setText(parse.getString(COLUMN_TEXT));
+                    n.setTitle(parse.getString(COLUMN_TITLE));
+                    n.setDateLastModified(parse.getDate(COLUMN_LAST_MODIFIED));
+                }
+            }
+        });
+
+        return n;
     }
 
     @Override
     public ArrayList<String> getIdList() {
-        return null;
+        final ArrayList<String> ids = new ArrayList<>();
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_ID);
+        query.whereEqualTo(COLUMN_USER_ID,userId);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e== null)
+                {
+                 for (ParseObject po : objects)
+                     ids.add(po.getString(COLUMN_NOTE_ID));
+                }
+            }
+        });
+        return ids;
     }
 
     @Override
     public ArrayList<Note> getNoteList() {
-        return null;
+        ArrayList<String> ids = getIdList();
+        ArrayList<Note> notes = new ArrayList<>();
+        String  tempId;
+        for (int i = 0; i < ids.size(); i++) {
+            tempId = ids.get(i);
+            notes.add(getNote(tempId));
+        }
+
+        return notes;
     }
 }
