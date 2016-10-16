@@ -12,18 +12,21 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
+import com.parse.ParseException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     Button btnAdd;
     GridView gv;
     ArrayList<Note> mainNotes;
     GridViewAdapter adapter;
-    LocalNoteService lns;
+    CloudNoteService cns;
     Intent noteActivityIntent;
     RelativeLayout rl;
     Snackbar sbDeleteNote;
@@ -37,11 +40,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        lns = new LocalNoteService(this);
         rl = (RelativeLayout) findViewById(R.id.rl);
+        try {
+            cns = new CloudNoteService(this);
+        } catch (IOException e) {
+            Snackbar.make(rl,"Error Connecting With Cloud",Snackbar.LENGTH_LONG).show();
+        }
+
         sbDeleteNote = Snackbar.make(rl,"Delete Note?",Snackbar.LENGTH_LONG);
 
 
@@ -60,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     //the add note button onclick event method
     public void addNote(View view) {
         noteActivityIntent = new Intent(this,NoteActivity.class);
+
         startActivity(noteActivityIntent);
     }
 
@@ -143,7 +152,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected ArrayList<Note> doInBackground(Object[] objects) {
-            ArrayList<Note> notes = lns.getNoteList();
+            ArrayList<Note> notes = new ArrayList<>();
+            try {
+                notes = cns.getNoteList();
+            } catch (ParseException e) {
+               notes.add(new Note("Error","Note not Found",new Date(),"Error"));            }
             Collections.sort(notes);
             return notes ;
         }
@@ -165,7 +178,11 @@ public class MainActivity extends AppCompatActivity {
         protected Integer doInBackground(String... params) {
 
             String id =params[0];
-            lns.deleteNote(id);
+            try {
+                cns.deleteNote(id);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             return null;
         }
 

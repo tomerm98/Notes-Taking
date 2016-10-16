@@ -5,6 +5,7 @@ import android.content.Context;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,8 +29,8 @@ public class LocalNoteService implements NoteServiceInterface {
 
 
     @Override
-    public void saveNote(Note n) {
-        try {
+    public void saveNote(Note n) throws FileNotFoundException {
+
             String fileName = n.getId() + ".txt";
             FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             PrintWriter pw = new PrintWriter(fos);
@@ -37,9 +38,7 @@ public class LocalNoteService implements NoteServiceInterface {
             pw.print(n.getText());
             pw.flush();
             pw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
 
@@ -51,12 +50,12 @@ public class LocalNoteService implements NoteServiceInterface {
     }
 
     @Override
-    public Note getNote(String id) {
+    public Note getNote(String id) throws IOException {
         String fileName = id + ".txt";
         String text = "";
         String title = "";
         Date lastModified = new Date();
-        try {
+
             File f = new File(fileName);
             lastModified = new Date(f.lastModified());
 
@@ -68,10 +67,7 @@ public class LocalNoteService implements NoteServiceInterface {
             while ((line = bufferedReader.readLine()) != null) {
                 text += line;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            text = "ERROR: FILE NOT FOUND";
-        }
+
         return new Note(title,text,lastModified,id);
     }
 
@@ -89,7 +85,7 @@ public class LocalNoteService implements NoteServiceInterface {
     }
 
     @Override
-    public ArrayList<Note> getNoteList() {
+    public ArrayList<Note> getNoteList() throws IOException {
         ArrayList<String> ids = getIdList();
         ArrayList<Note> notes = new ArrayList<>();
         String  tempId;

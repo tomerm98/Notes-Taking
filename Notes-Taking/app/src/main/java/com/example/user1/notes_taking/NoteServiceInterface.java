@@ -1,5 +1,9 @@
 package com.example.user1.notes_taking;
 
+import com.parse.ParseException;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -8,10 +12,10 @@ import java.util.Date;
  */
 public interface
 NoteServiceInterface {
-    void saveNote(Note n);
-    void deleteNote(String id);
-    Note getNote(String id);
-    ArrayList<String> getIdList();
-    ArrayList<Note> getNoteList();
+    void saveNote(Note n) throws ParseException, FileNotFoundException;
+    void deleteNote(String id) throws ParseException;
+    Note getNote(String id) throws IOException, ParseException;
+    ArrayList<String> getIdList() throws ParseException;
+    ArrayList<Note> getNoteList() throws IOException, ParseException;
 
 }
