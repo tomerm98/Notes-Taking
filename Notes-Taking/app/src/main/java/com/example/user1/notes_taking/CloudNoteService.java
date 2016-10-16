@@ -90,7 +90,7 @@ public class CloudNoteService implements NoteServiceInterface{
     }
 
     @Override
-    public void saveNote(final Note n) throws ParseException {
+    public void saveNote(Note n) throws ParseException {
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_ID);
         query.whereEqualTo(COLUMN_NOTE_ID, n.getId());
@@ -125,7 +125,7 @@ public class CloudNoteService implements NoteServiceInterface{
 
     @Override
     public Note getNote(String id) throws ParseException {
-        Note n = new Note("Error","Note not Found",new Date(),"Error"); // these values will stay if note not found
+        Note n = null;
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_ID);
         query.whereEqualTo(COLUMN_NOTE_ID, id);
@@ -134,9 +134,10 @@ public class CloudNoteService implements NoteServiceInterface{
         {
 
             ParseObject parse = objects.get(0);
-            n.setText(parse.getString(COLUMN_TEXT));
-            n.setTitle(parse.getString(COLUMN_TITLE));
-            n.setDateLastModified(parse.getDate(COLUMN_LAST_MODIFIED));
+            String text = parse.getString(COLUMN_TEXT);
+            String title = parse.getString(COLUMN_TITLE);
+            Date lastModified = parse.getDate(COLUMN_LAST_MODIFIED);
+            n = new Note(title,text,lastModified,id);
         }
 
         return n;
