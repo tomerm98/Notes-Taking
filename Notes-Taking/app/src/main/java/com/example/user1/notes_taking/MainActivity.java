@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     noteActivityIntent = new Intent(MainActivity.this,NoteActivity.class);
-                    noteActivityIntent.putExtra(getString(R.string.EXTRA_NOTE_ID),tempNote);
+                    noteActivityIntent.putExtra(NoteServiceInterface.EXTRA_NOTE_ID,tempNote);
                     startActivity(noteActivityIntent);
                 }
             });

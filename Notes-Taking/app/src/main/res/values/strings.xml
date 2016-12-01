@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Notes-Taking</string>
     <string name="EXTRA_NOTE_ID">note</string>
-    <string name="PARSE_APPLICATION_ID">hOWu3YDCSWNu8TIKGfAX3ApSuI1i05Sy7IP7KPnY</string>
-    <string name="PARSE_CLIENT_KEY">BVgfoPAgU7wMU2vPqmv0p8ToRsesxuGqhdB0OvRe</string>
-    <string name="PARSE_SERVER_ADDRESS">https://parseapi.back4app.com/</string>
+
+
 </resources>
