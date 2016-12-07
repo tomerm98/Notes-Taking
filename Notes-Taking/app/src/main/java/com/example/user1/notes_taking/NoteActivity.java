@@ -29,7 +29,6 @@ public class NoteActivity extends AppCompatActivity {
     RelativeLayout rl;
     final int DIALOG_ID = 777;
     DatePickerDialog.OnDateSetListener myDateListener;
-    int defaultYear, defaultMonth, defaultDay; //month must be -1
     Calendar calendar;
     Date chosenDate;
     public NoteActivity() throws IOException {
@@ -56,33 +55,22 @@ public class NoteActivity extends AppCompatActivity {
         if (note != null) {
             etTitle.setText(note.getTitle());
             etText.setText(note.getText());
-
-            defaultDay = note.getEventDate().getDate();
-            defaultMonth = note.getEventDate().getMonth();
-            defaultYear = note.getEventDate().getYear();
-
-            chosenDate = new Date(defaultYear,defaultMonth,defaultDay);
+            chosenDate = note.getEventDate();
 
         }
         else
-        {
-            defaultDay = calendar.get(Calendar.DAY_OF_MONTH);
-            defaultMonth = calendar.get(Calendar.MONTH);
-            defaultYear = calendar.get(Calendar.YEAR); //calendar uses normal values for year
             chosenDate = new Date();
-        }
+
 
         updateBtnDateText();
           myDateListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
-                // arg1 is year BUT WITH -1900
+                // arg1 is year
                 // arg2 is month
                 // arg3 is day
-                defaultYear = arg1 + 1900;
-                defaultMonth = arg2;
-                defaultDay = arg3 ;
-                chosenDate = new Date(defaultYear,defaultMonth,defaultDay);
+
+                chosenDate = new Date(arg1 -1900,arg2,arg3);
 
                 updateBtnDateText();
             }
@@ -107,6 +95,7 @@ public class NoteActivity extends AppCompatActivity {
             if (note != null) {
                 note.setText(etText.getText().toString());
                 note.setTitle(etTitle.getText().toString());
+                note.setEventDate(chosenDate);
             } else note = new Note(etTitle.getText().toString(),
                                  etText.getText().toString(),
                                 chosenDate);
@@ -128,16 +117,16 @@ public class NoteActivity extends AppCompatActivity {
     @Override
     protected Dialog onCreateDialog(int id) {
         if (id == DIALOG_ID)
-            return new DatePickerDialog(this,myDateListener, defaultYear +1900, defaultMonth, defaultDay); //default values.
+            return new DatePickerDialog(this,myDateListener, chosenDate.getYear() + 1900,chosenDate.getMonth(),chosenDate.getDate()); //default values.
 
 
         return super.onCreateDialog(id);
     }
     private void updateBtnDateText()
     {
-        btnDate.setText(String.valueOf(defaultDay) + "." +
-                String.valueOf(defaultMonth +1) + "." +
-                String.valueOf(defaultYear));
+        btnDate.setText(String.valueOf(chosenDate.getDate()) + "." +
+                String.valueOf(chosenDate.getMonth() +1) + "." +
+                String.valueOf(chosenDate.getYear() +1900) );
     }
 
 }

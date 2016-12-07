@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 Date eventDate = tempNote.getEventDate();
                 tvDate.setText(eventDate.getDate() + "." +
                                 (eventDate.getMonth() +1) + "." +
-                                 eventDate.getYear());
+                                (eventDate.getYear() +1900) );
                 //go to NoteActivity when clicking a note
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 notes = cns.getNoteList();
             } catch (ParseException e) {
                notes.add(new Note("Error","Note not Found",new Date(),"Error"));            }
-            Collections.sort(notes);
+            if (notes.size() > 0)Collections.sort(notes);
             return notes ;
         }
 
