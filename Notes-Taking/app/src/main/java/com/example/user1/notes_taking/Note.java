@@ -12,27 +12,22 @@ import java.util.Random;
 public class Note implements Comparable<Note>,Serializable{
     private String id;
     private String title;
-    private Date dateLastModified;
+    private Date eventDate;
     private String text;
     private final int idLength = 25;
-    public Note(String title, String text) {
+
+
+    public Note(String title, String text, Date eventDate) {
         this.title = title;
         this.text = text;
-        dateLastModified = new Date();
+        this.eventDate = eventDate;
         id = generateRandomId(idLength);
     }
 
-    public Note(String title, String text, Date dateLastModified) {
+    public Note(String title, String text, Date eventDate, String id) {
         this.title = title;
         this.text = text;
-        this.dateLastModified = dateLastModified;
-        id = generateRandomId(idLength);
-    }
-
-    public Note(String title, String text, Date dateLastModified, String id) {
-        this.title = title;
-        this.text = text;
-        this.dateLastModified = dateLastModified;
+        this.eventDate = eventDate;
         this.id = id;
     }
 
@@ -56,12 +51,12 @@ public class Note implements Comparable<Note>,Serializable{
         this.title = title;
     }
 
-    public Date getDateLastModified() {
-        return dateLastModified;
+    public Date getEventDate() {
+        return eventDate;
     }
 
-    public void setDateLastModified(Date dateLastModified) {
-        this.dateLastModified = dateLastModified;
+    public void setEventDate(Date eventDate) {
+        this.eventDate = eventDate;
     }
 
     private String generateRandomId(int length) {
@@ -78,6 +73,6 @@ public class Note implements Comparable<Note>,Serializable{
 
     @Override
     public int compareTo(@NonNull Note other) {
-        return - getDateLastModified().compareTo(((Note)other).getDateLastModified());
+        return - getEventDate().compareTo(((Note)other).getEventDate());
     }
 }

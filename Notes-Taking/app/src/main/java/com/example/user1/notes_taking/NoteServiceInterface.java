@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public interface
 NoteServiceInterface {
-    final static String EXTRA_NOTE_ID = "note";
+
     void saveNote(Note n) throws ParseException, FileNotFoundException;
     void deleteNote(String id) throws ParseException;
     Note getNote(String id) throws IOException, ParseException;

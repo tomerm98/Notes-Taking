@@ -24,19 +24,30 @@
             android:textSize="30sp"
             android:id="@+id/etTitle"
             android:background="@android:color/transparent"
+            android:layout_below="@+id/btnDate"
+            android:layout_marginTop="20dp"
 
             />
         <EditText
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
-
             android:hint="Text"
             android:background="@android:color/transparent"
             android:textSize="20sp"
             android:layout_below="@+id/etTitle"
             android:id="@+id/etText"
+            />
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose Date"
+            android:id="@+id/btnDate"
+            android:layout_centerHorizontal="true"
+            android:onClick="btnDateOnClickListener"
+
             />
 
     </RelativeLayout>

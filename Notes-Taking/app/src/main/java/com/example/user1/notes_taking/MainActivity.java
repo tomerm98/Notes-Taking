@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     Intent noteActivityIntent;
     RelativeLayout rl;
     Snackbar sbDeleteNote;
-
+    final static String EXTRA_NOTE_ID = "note";
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -104,35 +104,42 @@ public class MainActivity extends AppCompatActivity {
             view = getLayoutInflater().inflate(R.layout.gridview_item, viewGroup, false);
             TextView tvText = (TextView) view.findViewById(R.id.tvText);
             TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+            TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
+
             final Note tempNote = notes.get(i);
-            tvText.setText(tempNote.getText());
-            tvTitle.setText(tempNote.getTitle());
+            if (tempNote != null) {
+                tvText.setText(tempNote.getText());
+                tvTitle.setText(tempNote.getTitle());
+                Date eventDate = tempNote.getEventDate();
+                tvDate.setText(eventDate.getDate() + "." +
+                                (eventDate.getMonth() +1) + "." +
+                                 eventDate.getYear());
+                //go to NoteActivity when clicking a note
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        noteActivityIntent = new Intent(MainActivity.this, NoteActivity.class);
+                        noteActivityIntent.putExtra(EXTRA_NOTE_ID, tempNote);
+                        startActivity(noteActivityIntent);
+                    }
+                });
 
-            //go to NoteActivity when clicking a note
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    noteActivityIntent = new Intent(MainActivity.this,NoteActivity.class);
-                    noteActivityIntent.putExtra(NoteServiceInterface.EXTRA_NOTE_ID,tempNote);
-                    startActivity(noteActivityIntent);
-                }
-            });
-
-            //start a delete-note snackbar when long-pressing a note
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    sbDeleteNote.setAction("Yes", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            new DeleteNoteTask().execute(tempNote.getId());
-                            new SyncNotesTask().execute();
-                        }
-                    });
-                    sbDeleteNote.show();
-                    return true;
-                }
-            });
+                //start a delete-note snackbar when long-pressing a note
+                view.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        sbDeleteNote.setAction("Yes", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                new DeleteNoteTask().execute(tempNote.getId());
+                                new SyncNotesTask().execute();
+                            }
+                        });
+                        sbDeleteNote.show();
+                        return true;
+                    }
+                });
+            }
             return view;
 
         }
