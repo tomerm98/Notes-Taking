@@ -1,5 +1,8 @@
 package com.example.user1.notes_taking;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
@@ -62,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
         new SyncNotesTask().execute();
 
 
+        try {
+            ArrayList<Note> notes = cns.getNoteList();
+            for (Note n : notes)
+                setNotification(n);
+        } catch (ParseException e) {
+            throw new RuntimeException();
+        }
 
     }
 
@@ -71,6 +81,16 @@ public class MainActivity extends AppCompatActivity {
 
         startActivity(noteActivityIntent);
     }
+    private void setNotification(Note n)
+    {
+        NotificationManager NM;
+        NM=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notify=new Notification.Builder
+                (getApplicationContext()).setContentTitle(n.getTitle()).setContentText(n.getText()).
+                    setSmallIcon(R.mipmap.ic_launcher).build();
+        NM.notify(0,notify);
+    }
+
 
 
 
@@ -104,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
             view = getLayoutInflater().inflate(R.layout.gridview_item, viewGroup, false);
             TextView tvText = (TextView) view.findViewById(R.id.tvText);
             TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-            TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
+            TextView tvDate = (TextView) view.findViewById(R.id.tvNoteTitle);
 
             final Note tempNote = notes.get(i);
             if (tempNote != null) {
