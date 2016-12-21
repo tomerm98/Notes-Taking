@@ -65,13 +65,6 @@ public class MainActivity extends AppCompatActivity {
         new SyncNotesTask().execute();
 
 
-        try {
-            ArrayList<Note> notes = cns.getNoteList();
-            for (Note n : notes)
-                setNotification(n);
-        } catch (ParseException e) {
-            throw new RuntimeException();
-        }
 
     }
 
@@ -81,15 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         startActivity(noteActivityIntent);
     }
-    private void setNotification(Note n)
-    {
-        NotificationManager NM;
-        NM=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notify=new Notification.Builder
-                (getApplicationContext()).setContentTitle(n.getTitle()).setContentText(n.getText()).
-                    setSmallIcon(R.mipmap.ic_launcher).build();
-        NM.notify(0,notify);
-    }
+
 
 
 

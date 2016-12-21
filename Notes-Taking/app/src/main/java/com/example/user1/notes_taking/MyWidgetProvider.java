@@ -39,7 +39,9 @@ public class MyWidgetProvider extends AppWidgetProvider {
             return;
         remoteViews = new RemoteViews(context.getPackageName(),R.layout.widget);
         remoteViews.setTextViewText(R.id.tvNoteTitle,nearestNote.getTitle());
-        remoteViews.setTextViewText(R.id.tvDate,nearestNote.getEventDate().toString());
+        Date date = nearestNote.getEventDate();
+        String dateString = date.getDate() + "." + date.getMonth()+ "." + date.getYear();
+        remoteViews.setTextViewText(R.id.tvDate,dateString);
 
         for (int i =0; i<appWidgetIds.length; i++)
         {
@@ -54,6 +56,7 @@ public class MyWidgetProvider extends AppWidgetProvider {
             Collections.sort(notes);
             for (int i = notes.size()-1; i>= 0; i--)
             {
+                nearestNote = notes.get(i);
                 if (nearestNote.getEventDate().compareTo(new Date()) >= 0)
                     return nearestNote;
             }
